@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using ConjugonApi.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using ConjugonApi.Data;
-using ConjugonApi.Models.Domain.Player;
+using MongoDB.Bson;
+using System.Linq.Expressions;
 
-namespace ConjugonApi.Core.Repositories
+namespace ConjugonApi.Core
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly TennisDbContext _context;
+        private readonly ConjugonDbContext _context;
         protected DbSet<T> _dbSet;
 
-        public GenericRepository(TennisDbContext context)
+        public GenericRepository(ConjugonDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<T>();
@@ -19,7 +19,7 @@ namespace ConjugonApi.Core.Repositories
 
         public virtual async Task<bool> Add(T entity)
         {
-            EntityEntry sdf =  _dbSet.Add(entity);
+            _dbSet.Add(entity);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -50,18 +50,28 @@ namespace ConjugonApi.Core.Repositories
             return true;
         }
 
-        public virtual async Task<IEnumerable<T>> Get()
+        public async Task<List<T>> Find(Expression<Func<T, bool>> predicate, int size = 1)
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.Where(predicate).Take(size).ToListAsync();
         }
 
-        public virtual T? GetById(Guid id)
+        public virtual async Task<List<T>> Get(int size = 1)
+        {
+            return await _dbSet.Take(size).ToListAsync();
+        }
+
+        public virtual T? GetById(ObjectId id)
         {
             return _dbSet.Find(id);
         }
 
         public virtual bool Update(T entity)
         {
+            // TODO: maybe use this?
+            //var planet = db.Planets.FirstOrDefault(p => p.name == "Mercury");
+            //planet.name = "Mercury the first planet";
+            //db.SaveChanges();
+
             _context.Update(entity);
             return true;
         }

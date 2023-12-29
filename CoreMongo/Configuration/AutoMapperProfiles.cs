@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using ConjugonApi.DTOs;
 using ConjugonApi.Models;
-using ConjugonApi.Models.Domain;
-using CoreMongo.Models.DTOs;
 
-namespace ConjugonApi.Mappings
+namespace ConjugonApi.Configuration
 {
-    public class AutoMapperProfiles: Profile
+    public class AutoMapperProfiles : Profile
     {
-        public AutoMapperProfiles() { 
+        public AutoMapperProfiles()
+        {
             CreateMap<User, CreateUserDTO>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<Verb, VerbDTO>().ReverseMap();

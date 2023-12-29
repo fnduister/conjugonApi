@@ -1,12 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-
-namespace ConjugonApi.Models.Common
+﻿namespace ConjugonApi.Models
 {
-    public record EntityBase
+    public record EntityBase: IEntity
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId Id { get; set; }
     }
 }

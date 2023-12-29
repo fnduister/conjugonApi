@@ -1,6 +1,7 @@
-﻿
+﻿using MongoDB.Bson;
+using System.Linq.Expressions;
 
-namespace ConjugonApi.Core
+namespace ConjugonApi.Core.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
@@ -12,9 +13,11 @@ namespace ConjugonApi.Core
 
         Task<bool> DeleteAll(IEnumerable<T> entities);
 
-        Task<IEnumerable<T>> Get();
+        Task<List<T>> Get(int size = 1);
 
-        T? GetById(Guid id);
+        T? GetById(ObjectId id);
+
+        Task<List<T>> Find(Expression<Func<T, bool>> predicate, int size = 1);
 
         bool Update(T entity);
     }

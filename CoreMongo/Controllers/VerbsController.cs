@@ -1,9 +1,7 @@
-﻿using ConjugonApi.Models;
-using ConjugonApi.Services;
-using ConjugonApi.DTOs;
+﻿using ConjugonApi.Services;
 using ConjugonApi.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace ConjugonApi.Controllers;
 
@@ -11,18 +9,15 @@ namespace ConjugonApi.Controllers;
 [Route("api/[controller]")]
 public class VerbsController : ControllerBase
 {
-    private readonly VerbsService _usersService;
+    private readonly VerbsService _verbsService;
 
     public VerbsController(VerbsService verbsService) =>
-        _usersService = verbsService;
-
-
+        _verbsService = verbsService;
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Verb>> GetById(string id)
+    public async Task<ActionResult<Verb>> GetById(ObjectId id)
     {
-        
-        var verb = await _usersService.GetAsync(id);
+        var verb = _verbsService.Get(id);
 
         if (verb is null)
         {
@@ -35,51 +30,51 @@ public class VerbsController : ControllerBase
     [HttpGet]
     public async Task<List<Verb>> Get()
     {
-        return await _usersService.GetAsync();
+        return await _verbsService.GetAllAsync();
     }
 
     [HttpPost]
     public async Task<IActionResult> Post(Verb newVerb)
     {
-        await _usersService.CreateAsync(newVerb);
+        await _verbsService.CreateAsync(newVerb);
 
-        return CreatedAtAction(nameof(Get), new { id = newVerb.Id }, newVerb);
+        return CreatedAtAction(nameof(Post), new { id = newVerb.Id }, newVerb);
     }
     
     [HttpPost("Many")]
     public async Task<IActionResult> PostMany(List<VerbDTO> newVerbs)
     {
-        await _usersService.CreateManyAsync(newVerbs);
+        await _verbsService.CreateManyAsync(newVerbs);
 
-        return CreatedAtAction(nameof(Get), new { id = 1 }, newVerbs);
+        return CreatedAtAction(nameof(Post), new { id = 1 }, newVerbs);
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Verb updatedVerb)
+    public async Task<IActionResult> Update(ObjectId id, Verb updatedVerb)
     {
-        var verb = await _usersService.GetAsync(id);
+        var verb = _verbsService.Get(id);
 
         if (verb is null)
         {
             return NotFound();
         }
 
-        await _usersService.UpdateAsync(id, updatedVerb);
+        _verbsService.UpdateAsync(updatedVerb);
 
         return NoContent();
     }
 
     [HttpDelete("{id:length(24)}")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete(ObjectId id)
     {
-        var book = await _usersService.GetAsync(id);
+        var verb = _verbsService.Get(id);
 
-        if (book is null)
+        if (verb is null)
         {
             return NotFound();
         }
 
-        await _usersService.RemoveAsync(id);
+        await _verbsService.RemoveAsync(verb);
 
         return Ok("Removed"); //NoContent();
     }

@@ -1,9 +1,7 @@
 ﻿using ConjugonApi.Models;
 using ConjugonApi.Services;
-using ConjugonApi.DTOs;
-using ConjugonApi.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace ConjugonApi.Controllers;
 
@@ -16,13 +14,10 @@ public class UsersController : ControllerBase
     public UsersController(UsersService usersService) =>
         _usersService = usersService;
 
-
-
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<User>> GetById(string id)
+    public async Task<ActionResult<User>> GetById(ObjectId id)
     {
-        
-        var user = await _usersService.GetAsync(id);
+        var user = _usersService.Get(id);
 
         if (user is null)
         {
@@ -35,7 +30,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<List<User>> Get()
     {
-        return await _usersService.GetAsync();
+        return await _usersService.GetAllAsync();
     }
 
     [HttpPost]
@@ -47,7 +42,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpPost("Many")]
-    public async Task<IActionResult> PostMany(List<UserDTO> newUsers)
+    public async Task<IActionResult> PostMany(List<CreateUserDTO> newUsers)
     {
         await _usersService.CreateManyAsync(newUsers);
 
@@ -55,31 +50,31 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, User updatedUser)
+    public async Task<IActionResult> Update(ObjectId id, User updatedUser)
     {
-        var user = await _usersService.GetAsync(id);
+        var user = _usersService.Get(id);
 
         if (user is null)
         {
             return NotFound();
         }
 
-        await _usersService.UpdateAsync(id, updatedUser);
+        _usersService.UpdateAsync(updatedUser);
 
         return NoContent();
     }
 
     [HttpDelete("{id:length(24)}")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete(ObjectId id)
     {
-        var book = await _usersService.GetAsync(id);
+        var book = _usersService.Get(id);
 
         if (book is null)
         {
             return NotFound();
         }
 
-        await _usersService.RemoveAsync(id);
+        await _usersService.RemoveAsync(book);
 
         return Ok("Removed"); //NoContent();
     }

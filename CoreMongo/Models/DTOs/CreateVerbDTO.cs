@@ -1,6 +1,6 @@
 ﻿namespace ConjugonApi.Models
 {
-    public record CreateUserDTO
+    public record CreateVerbDTO
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

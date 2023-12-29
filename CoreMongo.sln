@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1704.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreMongo", "CoreMongo\CoreMongo.csproj", "{F90AF66F-D2D4-4429-ADA1-373966B91A91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConjugonApi", "CoreMongo\ConjugonApi.csproj", "{F90AF66F-D2D4-4429-ADA1-373966B91A91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConjugonApiTest", "ConjugonApiTest\ConjugonApiTest.csproj", "{32EFB9DF-20D5-4118-BE5A-7B0EA3E989D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F90AF66F-D2D4-4429-ADA1-373966B91A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F90AF66F-D2D4-4429-ADA1-373966B91A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F90AF66F-D2D4-4429-ADA1-373966B91A91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32EFB9DF-20D5-4118-BE5A-7B0EA3E989D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32EFB9DF-20D5-4118-BE5A-7B0EA3E989D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32EFB9DF-20D5-4118-BE5A-7B0EA3E989D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32EFB9DF-20D5-4118-BE5A-7B0EA3E989D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

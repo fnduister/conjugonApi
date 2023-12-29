@@ -1,13 +1,6 @@
-﻿using System;
-using System.Text.Json.Serialization;
-using ConjugonApi.DTOs;
-using ConjugonApi.Models.Common;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-namespace ConjugonApi.Models.Domain
+﻿namespace ConjugonApi.Models
 {
-    public record Verb: EntityBase
+    public record Verb: IEntity
     {
         public static Verb CreateNew(VerbDTO verbDTO)
         {

@@ -1,6 +1,6 @@
-﻿using ConjugonApi.Models.Domain.Player;
+﻿using ConjugonApi.Models;
 
 namespace ConjugonApi.Core.Interfaces
 {
-    public interface IPlayerRepository : IGenericRepository<PlayerModel> { }
+    public interface IVerbRepository : IGenericRepository<Verb> { }
 }

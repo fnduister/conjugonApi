@@ -1,48 +1,24 @@
-﻿using ConjugonApi.Models;
-using ConjugonApi.Services;
+﻿using ConjugonApi.Configuration.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.Configure<ConjugonDatabaseSettings>(
-    builder.Configuration.GetSection("ConjugonDatabase"));
+builder.ConfigureServices();
 
-builder.Services.AddSingleton<VerbsService>();
+builder.ConfigureMongo();
 
-//Authentication JWT Bearer
-builder.Services.AddAuthentication().AddJwtBearer();
+builder.ConfigureJwt();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(
-        options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.ConfigureSwaggerGen(setup =>
-{
-    setup.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "ConjugonApi",
-        Version = "v1"
-    });
-});
+builder.ConfigureSwagger();
 
 var app = builder.Build();
 
+app.ConfigureApplication();
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
+await app.RunAsync();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+[ExcludeFromCodeCoverage]
+public partial class Program { }
 

@@ -1,56 +1,44 @@
-﻿using ConjugonApi.DTOs;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Reflection.Metadata;
-using ConjugonApi.Models.Domain;
-using ConjugonApi.Models.Common;
+using ConjugonApi.Models;
+using ConjugonApi.Core.Interfaces;
+using ConjugonApi.Core;
 
 namespace ConjugonApi.Services;
 
 public class VerbsService
 {
-    private readonly IMongoCollection<Verb> _verbsCollection;
 
+    private DomainWork _unitOfWork;
     public VerbsService(
-        IOptions<ConjugonDatabaseSettings> conjugonDatabaseSettings)
+        DomainWork unitOfWork)
     {
-        var mongoClient = new MongoClient(
-            conjugonDatabaseSettings.Value.ConnectionString);
-
-        var mongoDatabase = mongoClient.GetDatabase(
-            conjugonDatabaseSettings.Value.DatabaseName);
-
-        _verbsCollection = mongoDatabase.GetCollection<Verb>(
-            conjugonDatabaseSettings.Value.ConjugonCollectionName);
-
-        var indexKeysDefinition = Builders<Verb>.IndexKeys.Ascending(indexKey => indexKey.Infinitif);
-        _verbsCollection.Indexes.CreateOne(new CreateIndexModel<Verb>(indexKeysDefinition));
-
-        var ixList = _verbsCollection.Indexes.List().ToList<BsonDocument>();
-        ixList.ForEach(ix => Console.WriteLine(ix));
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<List<Verb>> GetAsync()
+    public async Task<List<Verb>> GetAllAsync()
     {
-        return await _verbsCollection.Find(_ => true).ToListAsync();
+        return await _unitOfWork.Verbs.Get();
     }
 
-    public async Task<Verb?> GetAsync(string id) =>
-        await _verbsCollection.Find(x => x.Id == new ObjectId(id)).FirstOrDefaultAsync();
+    public Verb? Get(ObjectId id) => _unitOfWork.Verbs.GetById(id);
 
-    public async Task CreateAsync(Verb newVerb) => await _verbsCollection.InsertOneAsync(newVerb);
+    public async Task CreateAsync(Verb newVerb) => await _unitOfWork.Verbs.Add(newVerb);
 
     public async Task CreateManyAsync(List<VerbDTO> newVerbs)
     {
-        List<Verb> VerbToCreate = newVerbs.ConvertAll(verbDTO => Verb.CreateNew(verbDTO));
+        List<Verb> VerbToCreate = newVerbs.ConvertAll(VerbDTO => Verb.CreateNew(VerbDTO));
 
-        await _verbsCollection.InsertManyAsync(VerbToCreate);
+        await _unitOfWork.Verbs.AddAll(VerbToCreate);
     }
 
-    public async Task UpdateAsync(string id, Verb updatedVerb) =>
-        await _verbsCollection.ReplaceOneAsync(x => x.Id == new ObjectId(id), updatedVerb);
+    public bool UpdateAsync(Verb updatedVerb) =>
+        _unitOfWork.Verbs.Update(updatedVerb);
 
-    public async Task RemoveAsync(string id) =>
-        await _verbsCollection.DeleteOneAsync(x => x.Id == new ObjectId(id));
+    public async Task RemoveAsync(Verb Verb) =>
+        await _unitOfWork.Verbs.Delete(Verb);
+
+    public async Task RemoveAllAsync(IEnumerable<Verb> Verbs) =>
+        await _unitOfWork.Verbs.DeleteAll(Verbs);
 }

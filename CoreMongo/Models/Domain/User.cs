@@ -1,14 +1,10 @@
-﻿
-using ConjugonApi.Models.Common;
-using CoreMongo.Models.DTOs;
-
-namespace ConjugonApi.Models.Domain
+﻿namespace ConjugonApi.Models
 {
-    public record User: EntityBase
+    public record User: IEntity
     {
 
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public int Age { get; set; }
         public decimal Level { get; set; }
         public decimal Points { get; set; }

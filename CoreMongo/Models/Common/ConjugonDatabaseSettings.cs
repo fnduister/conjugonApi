@@ -1,4 +1,4 @@
-﻿namespace ConjugonApi.Models.Common;
+﻿namespace ConjugonApi.Models;
 
 public class ConjugonDatabaseSettings
 {

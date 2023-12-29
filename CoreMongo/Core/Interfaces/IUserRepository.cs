@@ -1,4 +1,4 @@
-﻿using ConjugonApi.Models.Domain.User;
+﻿using ConjugonApi.Models;
 
 namespace ConjugonApi.Core.Interfaces
 {

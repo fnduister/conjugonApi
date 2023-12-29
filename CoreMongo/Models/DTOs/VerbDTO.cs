@@ -1,4 +1,4 @@
-﻿namespace ConjugonApi.DTOs
+﻿namespace ConjugonApi.Models
 {
     public class VerbDTO
     {

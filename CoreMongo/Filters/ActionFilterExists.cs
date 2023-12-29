@@ -1,18 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ConjugonApi.Core;
+using ConjugonApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using ConjugonApi.Data;
-using ConjugonApi.Models.Common;
+using MongoDB.Bson;
 
 namespace ConjugonApi.Filters
 {
     public class ActionFilterExists<T> : IActionFilter where T : IEntity
     {
-        private readonly TennisDbContext _tennisDbContext;
+        private readonly ConjugonDbContext _conjugonDbContext;
 
-        public ActionFilterExists(TennisDbContext tennisDbContext)
+        public ActionFilterExists(ConjugonDbContext conjugonDbContext)
         {
-            _tennisDbContext = tennisDbContext;
+            _conjugonDbContext = conjugonDbContext;
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
@@ -21,20 +21,20 @@ namespace ConjugonApi.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            Guid id = Guid.Empty;
+            ObjectId id = ObjectId.Empty;
 
             if(!context.ActionArguments.ContainsKey("Id")) {
-                context.Result = new BadRequestObjectResult("Something aint right");
+                context.Result = new BadRequestObjectResult("Something ain't right");
             }
             else
             {
                 if(context.ActionArguments["Id"] != null)
                 {
-                    id = (Guid)context.ActionArguments["Id"];
+                    id = (ObjectId)context.ActionArguments["Id"]!;
                 }
             }
 
-            var entity = _tennisDbContext.Set<T>().SingleOrDefault(x => x.Id == id);
+            var entity = _conjugonDbContext.Set<T>().SingleOrDefault(x => x.Id == id);
 
             if(entity == null)
             {
